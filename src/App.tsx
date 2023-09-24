@@ -1,25 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Form from './components/Form';
+import TableVisitors from './components/TableVisitors';
+import { VisitorData } from "./types";
+import Header from './components/Header';
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme"; // Import your custom theme
+import { Grid } from '@mui/material';
 
 function App() {
+  const [visitors, setVisitors] = useState<VisitorData[]>([]);
+
+  useEffect(() => {
+    // Load existing visitors from local storage when the component mounts
+    const storedVisitors = localStorage.getItem("visitors");
+    if (storedVisitors) {
+      setVisitors(JSON.parse(storedVisitors));
+    }
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <Header />
+        <Grid container>
+          <Grid item xs={12} lg={4}>
+            <Form visitors={visitors} setVisitors={setVisitors} />
+          </Grid>
+          <Grid item xs={12} lg={8}>
+            <TableVisitors visitors={visitors} setVisitors={setVisitors} />
+          </Grid>
+        </Grid>
+      </div>
+    </ThemeProvider>
   );
 }
 
